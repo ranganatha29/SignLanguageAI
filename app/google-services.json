@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "323272507052",
+    "project_id": "sign-92ca3",
+    "storage_bucket": "sign-92ca3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:323272507052:android:1f62d29834f11ad2be6909",
+        "android_client_info": {
+          "package_name": "com.example.sign"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqneLGFB1DT1H5x-L_Q_zIYRN_Bo34ZkE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
