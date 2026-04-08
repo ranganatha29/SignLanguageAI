@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SignTranslate</title>
+
+  <style>
+    body {
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      color: white;
+      text-align: center;
+      font-family: sans-serif;
+    }
+
+    video {
+      width: 400px;
+      border-radius: 20px;
+      margin-top: 20px;
+    }
+
+    h1 {
+      margin-top: 20px;
+    }
+
+    h2 {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>SignTranslate</h1>
+
+<video id="video" autoplay playsinline></video>
+<h2 id="output">Starting camera...</h2>
+
+<!-- 🔥 MediaPipe CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+
+<script>
+const video = document.getElementById("video");
+const output = document.getElementById("output");
+
+// Create MediaPipe Hands
+const hands = new Hands({
+  locateFile: (file) => {
+    return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+  }
+});
+
+hands.setOptions({
+  maxNumHands: 1,
+  minDetectionConfidence: 0.7,
+  minTrackingConfidence: 0.7
+});
+
+// When MediaPipe detects hand
+hands.onResults(async (results) => {
+
+  if (!results.multiHandLandmarks || results.multiHandLandmarks.length === 0) {
+    output.innerText = "No hand detected";
+    return;
+  }
+
+  const lm = results.multiHandLandmarks[0];
+
+  let data = [];
+  lm.forEach(p => {
+    data.push(p.x, p.y, p.z);
+  });
+
+  try {
+    const res = await fetch("http://127.0.0.1:8000/predict", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    });
+
+    const json = await res.json();
+
+    console.log("API RESPONSE:", json);
+
+    if (json.gesture) {
+      output.innerText = json.gesture;
+    } else {
+      output.innerText = "Error";
+    }
+
+  } catch (err) {
+    console.error("FETCH ERROR:", err);
+    output.innerText = "Backend error";
+  }
+});
+
+// Start camera
+const camera = new Camera(video, {
+  onFrame: async () => {
+    await hands.send({ image: video });
+  },
+  width: 640,
+  height: 480
+});
+
+camera.start();
+</script>
+
+</body>
+</html>
