@@ -14,7 +14,7 @@ class OpenAiRepository {
         .create(OpenAiApi::class.java)
 
     // OpenAI API Key with Bearer prefix
-    private val apiKey = "Bearer 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"
+    private val apiKey = "your apikey"
 
     private var lastRequestTime = 0L
     private var lastResult = "Ready to translate"
